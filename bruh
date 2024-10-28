@@ -1,0 +1,910 @@
+local Stats = game:GetService("Stats")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+local Vico_Util = loadstring(game:HttpGet("https://raw.githubusercontent.com/imtiyaslentra/VICO-HELPER-V2/refs/heads/main/Nurysium%20Fek%20Collab%20With%20Vico"))()
+local function getTrainingBall()
+	for index, ball in workspace:WaitForChild("TrainingBalls"):GetChildren() do
+		if ball:IsA("BasePart") and ball:GetAttribute("realBall") then
+			return ball
+		end
+	end
+end
+local local_player = Players.LocalPlayer
+local visualizercheck, autospamcheck, autoparrycheck
+local camera = workspace.CurrentCamera
+local originalParryRemote
+local originalResolveParryRemote 
+local vico_dataa = nil
+local hit_Sound = nil
+local closest_Entity = nil
+local aura_Enabled = false
+local auto_curve = false
+local auto_spam = false
+local training_mode = false
+local anti_curve_spam_Enabled = false
+local visualize_Enabled = false
+local hit_sound_Enabled = false
+local hit_effect_Enabled = false
+local night_mode_Enabled = false
+local trail_Enabled = false
+local ball_trial_Enabled = false
+local self_effect_Enabled = false
+local kill_effect_Enabled = false
+local shaders_effect_Enabled = false
+local ai_Enabled = false
+local auto_win = false
+local tp_hit = false
+local potanum = 15
+local spectate_Enabled = false
+local skibidi = true
+local takentimestart = false
+local Services = {game:GetService("AdService"),game:GetService("SocialService")}
+function initializate(dataaFolder_name)
+	vico_dataa = Instance.new("Folder", game:GetService("CoreGui"))
+	vico_dataa.Name = dataaFolder_name
+	hit_Sound = Instance.new("Sound", nurysium_dataa)
+	hit_Sound.SoundId = "rbxassetid://8632670510"
+	hit_Sound.Volume = 5
+end
+local function get_closest_entity(Object)
+	task.spawn(function()
+		local closest
+		local max_distance = math.huge
+		for index, entity in workspace.Alive:GetChildren() do
+			if entity.Name ~= Players.LocalPlayer.Name then
+				local distance = (Object.Position - entity.HumanoidRootPart.Position).Magnitude
+				if distance < max_distance then
+					closest_Entity = entity
+					max_distance = distance
+				end
+			end
+		end
+		return closest_Entity
+	end)
+end
+
+function resolve_parry_Remote()
+    local temp_remote = game:GetService("VirtualUser"):WaitForChild("\n\n\n\n\n")
+    if not temp_remote then
+        print("No RemoteEvent found.") -- Debug: Tidak ada RemoteEvent
+        return
+    end
+    if not temp_remote:IsA('RemoteEvent') then
+        print("Found object is not a RemoteEvent.") -- Debug: Bukan RemoteEvent
+        return
+    end
+    originalParryRemote = temp_remote
+    print("RemoteEvent resolved successfully.") -- Debug: RemoteEvent berhasil
+end
+
+resolve_parry_Remote()
+local aura_table = {
+	canParry = true,
+	is_Spamming = false,
+	parry_Range = 31,
+	spam_Range = 0,  
+	hit_Count = 0,
+	hit_Time = tick(),
+	ball_Warping = tick(),
+	is_ball_Warping = false,
+	last_target = nil,
+}
+
+workspace:WaitForChild("Balls").ChildRemoved:Connect(function(child)
+	aura_table.hit_Count = 0
+	aura_table.is_ball_Warping = false
+	aura_table.is_Spamming = false
+	aura_table.canParry = true
+	aura_table.last_target = nil
+end)
+
+ReplicatedStorage.Remotes.ParrySuccess.OnClientEvent:Connect(function()
+	if takentimestart then
+		data.taken_time = tick() - data.hit_Time
+	end
+	if hit_sound_Enabled then
+		hit_Sound:Play()
+	end
+	if hit_effect_Enabled then
+		local hit_effect = game:GetObjects("rbxassetid://17407244385")[1]
+		hit_effect.Parent = Vico_Util.getBall()
+		hit_effect:Emit(3)
+		task.delay(5, function()
+			hit_effect:Destroy()
+		end)
+	end
+end)
+
+	local MauaulSpam -- Declare MauaulSpam globally
+
+function ManualSpam()
+    -- Gui to Lua
+    -- Version: 3.2
+    
+    if MauaulSpam then
+        MauaulSpam:Destroy()
+        MauaulSpam = nil
+        return
+    end
+
+    MauaulSpam = Instance.new("ScreenGui")
+    MauaulSpam.Name = "MauaulSpam"
+    MauaulSpam.Parent = game.CoreGui
+    MauaulSpam.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    MauaulSpam.ResetOnSpawn = false
+
+    local Main = Instance.new("Frame")
+    Main.Name = "Main"
+    Main.Parent = MauaulSpam
+    Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Main.BorderSizePixel = 0
+    Main.Position = UDim2.new(0.41414836, 0, 0.404336721, 0)
+    Main.Size = UDim2.new(0.227479532, 0, 0.191326529, 0)
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.Parent = Main
+
+    local IndercantorBlahblah = Instance.new("Frame")
+    IndercantorBlahblah.Name = "IndercantorBlahblah"
+    IndercantorBlahblah.Parent = Main
+    IndercantorBlahblah.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    IndercantorBlahblah.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    IndercantorBlahblah.BorderSizePixel = 0
+    IndercantorBlahblah.Position = UDim2.new(0.0280000009, 0, 0.0733333305, 0)
+    IndercantorBlahblah.Size = UDim2.new(0.0719999969, 0, 0.119999997, 0)
+
+    local UICorner_2 = Instance.new("UICorner")
+    UICorner_2.CornerRadius = UDim.new(1, 0)
+    UICorner_2.Parent = IndercantorBlahblah
+
+    local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+    UIAspectRatioConstraint.Parent = IndercantorBlahblah
+
+    local PC = Instance.new("TextLabel")
+    PC.Name = "PC"
+    PC.Parent = Main
+    PC.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    PC.BackgroundTransparency = 1.000
+    PC.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    PC.BorderSizePixel = 0
+    PC.Position = UDim2.new(0.547999978, 0, 0.826666653, 0)
+    PC.Size = UDim2.new(0.451999992, 0, 0.173333332, 0)
+    PC.Font = Enum.Font.Unknown
+    PC.Text = "PC: E to spam"
+    PC.TextColor3 = Color3.fromRGB(57, 57, 57)
+    PC.TextScaled = true
+    PC.TextSize = 16.000
+    PC.TextWrapped = true
+
+    local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+    UITextSizeConstraint.Parent = PC
+    UITextSizeConstraint.MaxTextSize = 16
+
+    local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
+    UIAspectRatioConstraint_2.Parent = PC
+    UIAspectRatioConstraint_2.AspectRatio = 4.346
+
+    local IndercanotTextBlah = Instance.new("TextButton")
+    IndercanotTextBlah.Name = "IndercanotTextBlah"
+    IndercanotTextBlah.Parent = Main
+    IndercanotTextBlah.Active = false
+    IndercanotTextBlah.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    IndercanotTextBlah.BackgroundTransparency = 1.000
+    IndercanotTextBlah.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    IndercanotTextBlah.BorderSizePixel = 0
+    IndercanotTextBlah.Position = UDim2.new(0.164000005, 0, 0.326666653, 0)
+    IndercanotTextBlah.Selectable = false
+    IndercanotTextBlah.Size = UDim2.new(0.667999983, 0, 0.346666664, 0)
+    IndercanotTextBlah.Font = Enum.Font.GothamBold
+    IndercanotTextBlah.Text = "Spam"
+    IndercanotTextBlah.TextColor3 = Color3.fromRGB(255, 255, 255)
+    IndercanotTextBlah.TextScaled = true
+    IndercanotTextBlah.TextSize = 22.000
+    IndercanotTextBlah.TextWrapped = true
+
+    local UIGradient = Instance.new("UIGradient")
+    UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)), ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255, 0, 4)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))}
+    UIGradient.Parent = IndercanotTextBlah
+
+    local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+    UITextSizeConstraint_2.Parent = IndercanotTextBlah
+    UITextSizeConstraint_2.MaxTextSize = 52
+
+    local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
+    UIAspectRatioConstraint_3.Parent = IndercanotTextBlah
+    UIAspectRatioConstraint_3.AspectRatio = 3.212
+
+    local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
+    UIAspectRatioConstraint_4.Parent = Main
+    UIAspectRatioConstraint_4.AspectRatio = 1.667
+
+--Properties:
+
+MauaulSpam.Name = "MauaulSpam"
+MauaulSpam.Parent = game.CoreGui
+MauaulSpam.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+MauaulSpam.ResetOnSpawn = false
+
+Main.Name = "Main"
+Main.Parent = MauaulSpam
+Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0.41414836, 0, 0.404336721, 0)
+Main.Size = UDim2.new(0.227479532, 0, 0.191326529, 0)
+
+UICorner.Parent = Main
+
+IndercantorBlahblah.Name = "IndercantorBlahblah"
+IndercantorBlahblah.Parent = Main
+IndercantorBlahblah.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+IndercantorBlahblah.BorderColor3 = Color3.fromRGB(0, 0, 0)
+IndercantorBlahblah.BorderSizePixel = 0
+IndercantorBlahblah.Position = UDim2.new(0.0280000009, 0, 0.0733333305, 0)
+IndercantorBlahblah.Size = UDim2.new(0.0719999969, 0, 0.119999997, 0)
+
+UICorner_2.CornerRadius = UDim.new(1, 0)
+UICorner_2.Parent = IndercantorBlahblah
+
+UIAspectRatioConstraint.Parent = IndercantorBlahblah
+
+PC.Name = "PC"
+PC.Parent = Main
+PC.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+PC.BackgroundTransparency = 1.000
+PC.BorderColor3 = Color3.fromRGB(0, 0, 0)
+PC.BorderSizePixel = 0
+PC.Position = UDim2.new(0.547999978, 0, 0.826666653, 0)
+PC.Size = UDim2.new(0.451999992, 0, 0.173333332, 0)
+PC.Font = Enum.Font.Unknown
+PC.Text = "PC: E to spam"
+PC.TextColor3 = Color3.fromRGB(57, 57, 57)
+PC.TextScaled = true
+PC.TextSize = 16.000
+PC.TextWrapped = true
+
+UITextSizeConstraint.Parent = PC
+UITextSizeConstraint.MaxTextSize = 16
+
+UIAspectRatioConstraint_2.Parent = PC
+UIAspectRatioConstraint_2.AspectRatio = 4.346
+
+IndercanotTextBlah.Name = "IndercanotTextBlah"
+IndercanotTextBlah.Parent = Main
+IndercanotTextBlah.Active = false
+IndercanotTextBlah.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+IndercanotTextBlah.BackgroundTransparency = 1.000
+IndercanotTextBlah.BorderColor3 = Color3.fromRGB(0, 0, 0)
+IndercanotTextBlah.BorderSizePixel = 0
+IndercanotTextBlah.Position = UDim2.new(0.164000005, 0, 0.326666653, 0)
+IndercanotTextBlah.Selectable = false
+IndercanotTextBlah.Size = UDim2.new(0.667999983, 0, 0.346666664, 0)
+IndercanotTextBlah.Font = Enum.Font.GothamBold
+IndercanotTextBlah.Text = "Spam"
+IndercanotTextBlah.TextColor3 = Color3.fromRGB(255, 255, 255)
+IndercanotTextBlah.TextScaled = true
+IndercanotTextBlah.TextSize = 22.000
+IndercanotTextBlah.TextWrapped = true
+
+UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)), ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255, 0, 4)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))}
+UIGradient.Parent = IndercanotTextBlah
+
+UITextSizeConstraint_2.Parent = IndercanotTextBlah
+UITextSizeConstraint_2.MaxTextSize = 52
+
+UIAspectRatioConstraint_3.Parent = IndercanotTextBlah
+UIAspectRatioConstraint_3.AspectRatio = 3.212
+
+UIAspectRatioConstraint_4.Parent = Main
+UIAspectRatioConstraint_4.AspectRatio = 1.667
+
+-- Scripts:
+
+local function HEUNEYP_fake_script() -- IndercanotTextBlah.ColorChangeScript 
+	local script = Instance.new('LocalScript', IndercanotTextBlah)
+
+	local button = script.Parent
+	local UIGredient = button.UIGradient
+	local NeedToChange = script.Parent.Parent.IndercantorBlahblah
+	local userInputService = game:GetService("UserInputService")
+	local RunService = game:GetService("RunService")
+
+	-- ColorSequences Ã Â¸ÂªÃ Â¸Â³Ã Â¸Â«Ã Â¸Â£Ã Â¸Â±Ã Â¸Å¡Ã Â¸ÂªÃ Â¸ÂµÃ Â¹â‚¬Ã Â¸â€šÃ Â¸ÂµÃ Â¸Â¢Ã Â¸Â§Ã Â¹ÂÃ Â¸Â¥Ã Â¸Â°Ã Â¸ÂªÃ Â¸ÂµÃ Â¹ÂÃ Â¸â€Ã Â¸â€¡
+	local green_Color = {
+		ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)), 
+		ColorSequenceKeypoint.new(0.75, Color3.fromRGB(0, 255, 0)), 
+		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
+	}
+
+	local red_Color = {
+		ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)), 
+		ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255, 0, 0)), 
+		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
+	}
+
+	local current_Color = red_Color
+	local target_Color = green_Color
+	local is_Green = false
+	local transition = false
+	local transition_Time = 1
+	local start_Time
+
+	local function startColorTransition()
+		transition = true
+		start_Time = tick()
+	end
+
+	RunService.Heartbeat:Connect(function()
+		if transition then
+			local elapsed = tick() - start_Time
+			local alpha = math.clamp(elapsed / transition_Time, 0, 1)
+
+			local new_Color = {}
+			for i = 1, #current_Color do
+				local start_Color = current_Color[i].Value
+				local end_Color = target_Color[i].Value
+				new_Color[i] = ColorSequenceKeypoint.new(
+					current_Color[i].Time,
+					start_Color:Lerp(end_Color, alpha)
+				)
+			end
+
+			UIGredient.Color = ColorSequence.new(new_Color)
+
+			if alpha >= 1 then
+				transition = false
+				current_Color, target_Color = target_Color, current_Color
+			end
+		end
+	end)
+
+	local function toggleColor()
+		if not transition then
+			is_Green = not is_Green
+			if is_Green then
+				target_Color = green_Color
+				NeedToChange.BackgroundColor3 = Color3.new(0, 1, 0)
+			else
+				target_Color = red_Color
+				NeedToChange.BackgroundColor3 = Color3.new(1, 0, 0)
+			end
+			startColorTransition()
+		end
+	end
+
+	button.MouseButton1Click:Connect(toggleColor)
+
+	userInputService.InputBegan:Connect(function(input, gameProcessed)
+		if gameProcessed then return end
+		if input.KeyCode == Enum.KeyCode.E then
+			toggleColor()
+		end
+	end)
+
+	local Services = {game:GetService("AdService"), game:GetService("SocialService")}
+	local originalParryRemote = nil
+
+	function resolve_parry_Remote()
+        local temp_remote = game:GetService("VirtualUser"):WaitForChild("\n\n\n\n\n")
+        if not temp_remote or not temp_remote:IsA('RemoteEvent') then
+            return
+        end
+        originalParryRemote = temp_remote
+    end
+
+    resolve_parry_Remote()
+
+	local camera = workspace.CurrentCamera
+	local mouse = game.Players.LocalPlayer:GetMouse()
+
+	local function getClosestEntity()
+		local closest_Entity = nil
+		local shortestDistance = math.huge
+
+		for _, entity in pairs(workspace.Alive:GetChildren()) do
+			if entity:IsA("Model") and entity:FindFirstChild("HumanoidRootPart") then
+				local screenPoint = camera:WorldToViewportPoint(entity.HumanoidRootPart.Position)
+				local distanceToMouse = (Vector2.new(screenPoint.X, screenPoint.Y) - Vector2.new(mouse.X, mouse.Y)).Magnitude
+
+				if distanceToMouse < shortestDistance then
+					closest_Entity = entity
+					shortestDistance = distanceToMouse
+				end
+			end
+		end
+
+		return closest_Entity
+	end
+
+	RunService.RenderStepped:Connect(function()
+		if is_Green and originalParryRemote then
+			local closest_Entity = getClosestEntity()
+			if closest_Entity then
+				local cf = camera.CFrame
+				local x, y, z, R00, R01, R02, R10, R11, R12, R20, R21, R22 = cf:GetComponents()
+
+				originalParryRemote:FireServer(
+					0,
+					CFrame.new(x, y, z, R00, R01, R02, R10, R11, R12, R20, R21, R22),
+					{[closest_Entity.Name] = closest_Entity.HumanoidRootPart.Position},
+					{closest_Entity.HumanoidRootPart.Position.X, closest_Entity.HumanoidRootPart.Position.Y},
+					false
+				)
+			end
+		end
+	end)
+
+	
+	end
+coroutine.wrap(HEUNEYP_fake_script)()
+end
+
+task.defer(function()
+	local self = Nurysium_Util.getBall()
+	wait(0.1)
+	local Visualize = Instance.new("Part",workspace)
+	local Visualize1 = Instance.new("Part",workspace)
+	wait(0.5)
+	Visualize.Color = Color3.new(0, 1, 0)
+	Visualize.Material = Enum.Material.ForceField
+	Visualize.Transparency = 0.5
+	Visualize.Anchored = true
+	Visualize.CanCollide = false
+	Visualize.CastShadow = false
+	Visualize.Shape = Enum.PartType.Ball
+	Visualize.Size = Vector3.new(30,30,30)
+	Visualize1.Color = Color3.new(1, 0, 0)
+	Visualize1.Material = Enum.Material.ForceField
+	Visualize1.Transparency = 0.5
+	Visualize1.Anchored = true
+	Visualize1.CanCollide = false
+	Visualize1.CastShadow = false
+	Visualize1.Shape = Enum.PartType.Ball
+	Visualize1.Size = Vector3.new(aura_table.spam_Range, aura_table.spam_Range, aura_table.spam_Range)
+
+	local Highlight1 = Instance.new("Highlight")
+	Highlight1.Parent = Visualize1
+	Highlight1.Enabled = true
+	Highlight1.FillTransparency = 0
+	Highlight1.OutlineColor = Color3.new(1, 1, 1)
+	local Highlight = Instance.new("Highlight")
+	Highlight.Parent = Visualize
+	Highlight.Enabled = true
+	Highlight.FillTransparency = 0
+	Highlight.OutlineColor = Color3.new(1, 1, 1)
+	
+task.spawn(function()
+	visualizercheck = RunService.RenderStepped:Connect(function()
+		if visualize_Enabled then
+			Visualize.Transparency = 0
+			Visualize.Material = Enum.Material.ForceField
+			Visualize.Size = Vector3.new(aura_table.parry_Range, aura_table.parry_Range, aura_table.parry_Range)
+			Visualize.CFrame = CFrame.new(local_player.Character.PrimaryPart.Position)
+			Visualize1.Transparency = 0
+			Visualize1.Material = Enum.Material.ForceField
+			Visualize1.Size = Vector3.new(aura_table.spam_Range, aura_table.spam_Range, aura_table.spam_Range)
+			Visualize1.CFrame = CFrame.new(local_player.Character.PrimaryPart.Position)
+		else
+			Visualize.Material = Enum.Material.ForceField
+			Visualize.Transparency = 1
+			Visualize1.Material = Enum.Material.ForceField
+			Visualize1.Transparency = 1
+		end	
+	end)
+end)
+
+function getClosestEntityToMouse()
+	local closest = nil
+	local shortestDistance = math.huge
+	local mouse = game.Players.LocalPlayer:GetMouse()
+	-- Ensure workspace.Alive exists
+	if not workspace:FindFirstChild("Alive") then
+		return nil
+	end
+	-- Loop through all entities
+	for _, entity in pairs(workspace.Alive:GetChildren()) do
+		if entity:IsA("Model") then
+			local humanoidRootPart = entity:FindFirstChild("HumanoidRootPart")
+			if humanoidRootPart then
+				-- Convert world position to screen position
+				local screenPoint = camera:WorldToViewportPoint(humanoidRootPart.Position)
+				local distanceToMouse = (Vector2.new(screenPoint.X, screenPoint.Y) - Vector2.new(mouse.X, mouse.Y)).Magnitude
+				-- Check if this is the closest entity so far
+				if distanceToMouse < shortestDistance then
+					closest = entity
+					shortestDistance = distanceToMouse
+				end
+			else
+			end
+		else
+		end
+	end
+	-- If no closest entity is found, warn the user
+	if not closest then
+	else
+	end
+	return closest
+end
+local closest_Entity_To_mouse = nil
+task.defer(function()
+	RunService.Heartbeat:Connect(function()
+		closest_Entity_To_mouse = getClosestEntityToMouse()
+	end)
+end)
+local Takentime = tick() - data.hit_Time
+RunService.Heartbeat:Connect(function()
+	Takentime = tick() - data.hit_Time
+end)
+task.spawn(function()
+    autospamcheck = RunService:BindToRenderStep("PreAutoSpam", Enum.RenderPriority.First.Value, function() -- Auto Spam
+        if not auto_spam or not workspace.Alive:FindFirstChild(local_player.Name) or training_mode then
+            aura_table.hit_Count = 0
+            aura_table.is_Spamming = false
+            aura_table.last_target = nil
+            ismyautoparryspamming = false
+            aura_table.spam_Range = 0
+            return
+        end
+
+        if closest_Entity then
+            if workspace.Alive:FindFirstChild(closest_Entity.Name) then
+                if data.is_Spamming then
+                    if workspace.Alive:FindFirstChild(local_player.Name) and data.can_spam and 
+                        (local_player.Character.PrimaryPart.Position - closest_Entity.HumanoidRootPart.Position).Magnitude <= data.spam_Range then
+                        
+                        task.spawn(function()
+                            repeat
+                                    if closest_Entity_To_mouse and closest_Entity_To_mouse:FindFirstChild("HumanoidRootPart") then
+                                        for v = 1, 70 do -- Loop for fast spam
+                                            originalParryRemote:FireServer(
+                                                0,
+                                                CFrame.new(x, y, z, R00, R01, R02, R10, R11, R12, R20, R21, R22),
+                                                {[closest_Entity_To_mouse.Name] = closest_Entity_To_mouse.HumanoidRootPart.Position},
+                                                {closest_Entity_To_mouse.HumanoidRootPart.Position.X, closest_Entity_To_mouse.HumanoidRootPart.Position.Y},
+                                                false
+                                            )
+                                            wait(spamSpeed) -- Optional: Use wait for some spacing
+                                        end
+                                    else
+                                        -- Fallback logic to find a backup target
+                                        local backupTarget = nil
+                                        for _, potentialTarget in pairs(Players:GetPlayers()) do
+                                            if potentialTarget ~= Player and potentialTarget.Character and 
+                                                potentialTarget.Character:FindFirstChild("HumanoidRootPart") then
+                                                backupTarget = potentialTarget
+                                                break -- Exit the loop once a backup target is found
+                                            end
+                                        end
+
+                                        if backupTarget then
+                                            local backupPosition = backupTarget.Character.HumanoidRootPart.Position
+                                            for v = 1, 65 do -- Loop for fast spam
+                                                originalParryRemote:FireServer(
+                                                    0,
+                                                    CFrame.new(x, y, z, R00, R01, R02, R10, R11, R12, R20, R21, R22),
+                                                    {[backupTarget.Name] = backupPosition},
+                                                    {backupPosition.X, backupPosition.Y},
+                                                    false
+                                                )
+                                            end
+                                        end
+                                    end
+                                    RunService.Heartbeat:Wait()
+                                end
+                            until not data.is_Spamming or not data.can_spam or 
+                                  (local_player.Character.PrimaryPart.Position - closest_Entity.HumanoidRootPart.Position).Magnitude > data.spam_Range or 
+                                  not closest_Entity or 
+                                  not workspace.Alive:FindFirstChild(closest_Entity.Name)
+                        end)
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+    autoparrycheck = 
+	RunService:BindToRenderStep("AutoParry", Enum.RenderPriority.First.Value, function()
+		if not aura_Enabled or not (workspace.Alive:FindFirstChild(local_player.Name) or training_mode) then
+			aura_table.hit_Time = tick() * 10
+			aura_table.hit_Count = 0
+			aura_table.is_ball_Warping = false
+			aura_table.is_Spamming = false
+			aura_table.canParry = true
+			aura_table.last_target = nil
+			return
+		end
+
+		local ping = Stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 10
+		local self
+
+		if training_mode then
+			self = getTrainingBall()
+		else
+			self = Vico_Util.getBall()
+		end
+
+		if not self then
+			aura_table.hit_Time = tick() * 10
+			aura_table.hit_Count = 0
+			aura_table.is_ball_Warping = false
+			aura_table.is_Spamming = false
+			aura_table.canParry = true
+			aura_table.last_target = nil
+			return
+		end
+
+		self:GetAttributeChangedSignal('target'):Once(function()
+			aura_table.canParry = true
+		end)
+
+		if self:GetAttribute('target') ~= local_player.Name or not aura_table.canParry then
+			return
+		end
+
+		self:GetAttributeChangedSignal('from'):Once(function()
+			aura_table.last_target = workspace.Alive:FindFirstChild(self:GetAttribute('from'))
+		end)
+
+		get_closest_entity(local_player.Character.PrimaryPart)
+
+		local player_Position = local_player.Character.PrimaryPart.Position
+		local ball_Position = self.Position
+		local ball_Velocity = self.AssemblyLinearVelocity
+
+		if self:FindFirstChild("zoomies") then
+			ball_Velocity = self.zoomies.VectorVelocity
+		end
+
+		local ball_Direction = (player_Position - ball_Position).Unit
+		local ball_Distance = (player_Position - ball_Position).Magnitude
+		local ball_Dot = ball_Direction:Dot(ball_Velocity.Unit)
+		local ball_Speed = ball_Velocity.Magnitude
+
+		-- Detección de la bola
+		local ball_properties = {}
+		ball_properties.position = ball_Position
+		ball_properties.velocity = ball_Velocity
+		ball_properties.distance = (local_player.Character.PrimaryPart.Position - ball_properties.position).Magnitude
+		ball_properties.speed = ball_properties.velocity.Magnitude
+		ball_properties.direction = (local_player.Character.PrimaryPart.Position - ball_properties.position).Unit
+		ball_properties.dot = ball_properties.direction:Dot(ball_properties.velocity.Unit)
+		ball_properties.radians = math.rad(math.asin(ball_properties.dot))
+
+		if ball_properties.dot < -0.2 then
+			aura_table.ball_Warping = tick()
+		end
+
+		-- Anti-curve mechanism
+		if ball_Speed < 25 or ball_Velocity.Y > 10 then
+			aura_table.hit_Time = tick() * 10
+			aura_table.hit_Count = 0
+			aura_table.is_ball_Warping = false
+			aura_table.is_Spamming = false
+			aura_table.canParry = true
+			aura_table.last_target = nil
+		end
+
+		local player_Velocity = local_player.Character.HumanoidRootPart.AssemblyLinearVelocity
+		local player_isMoving = player_Velocity.Magnitude > 0
+		local ball_speed_Limited = math.min(ball_Speed / 1000, 0.1)
+		local targetPosition = closest_Entity_To_mouse.HumanoidRootPart.Position
+		local target_Distance = local_player:DistanceFromCharacter(targetPosition)
+		local closest_target_Distance = local_player:DistanceFromCharacter(closest_Entity.HumanoidRootPart.Position)
+		local target_distance_Limited = math.min(target_Distance / 10000, 0.1)
+		local target_Direction = (local_player.Character.PrimaryPart.Position - closest_Entity.HumanoidRootPart.Position).Unit
+		local target_Velocity = closest_Entity.HumanoidRootPart.AssemblyLinearVelocity
+		local target_isMoving = target_Velocity.Magnitude > 0
+		local target_Dot = target_isMoving and math.max(target_Direction:Dot(target_Velocity.Unit), 0)
+
+		aura_table.spam_Range = math.clamp(math.max(math.max(ping / 8.5, 15) + ball_Speed / 7.5, 8.4), 25, 1200)
+		speedFactor = 3 - (ping / 100)
+		speedFactorPingBased = 6.1 - (ping / 100)
+		aura_table.parry_Range = math.max(math.max(ping, 3.5) + ball_Speed / speedFactor, speedFactorPingBased)
+
+		aura_table.is_Spamming = aura_table.hit_Count > 1 or (target_Distance <= aura_table.spam_Range and ball_Distance < 18 and ball_Speed > 8) and ball_Velocity.Y > -50 and ball_Dot > 0.15
+
+		task.spawn(function()
+			if (tick() - aura_table.ball_Warping) >= 0.15 + target_distance_Limited - ball_speed_Limited or ball_Distance <= 10 then
+				aura_table.is_ball_Warping = false
+				return
+			end
+
+			if aura_table.last_target then
+				if (ball_Position - aura_table.last_target.HumanoidRootPart.Position).Magnitude > 35.5 or target_Distance <= 12 then
+					aura_table.is_ball_Warping = false
+				end
+			end
+
+			aura_table.is_ball_Warping = true
+		end)
+
+		-- Predecir la posición de la pelota
+		local predicted_ball_Position = linear_predict(ball_Position, ball_Position + ball_Velocity * (ping / 100), 0.5)
+
+		if ball_Distance <= aura_table.parry_Range and not aura_table.is_ball_Warping and ball_Speed > 0 and ball_Dot > 0.1 then
+			local cf = camera.CFrame
+			local target_X = targetPosition.X
+			local target_Y = targetPosition.Y
+
+			originalParryRemote:FireServer(
+				0,
+				CFrame.new(cf.Position, predicted_ball_Position),
+				{[closest_Entity_To_mouse.Name] = targetPosition},
+				{target_X, target_Y},
+				false
+			)
+
+			aura_table.hit_Count = aura_table.hit_Count + 1
+			task.delay(0.55 + (ping / 100), function()
+				aura_table.hit_Count = aura_table.hit_Count - 1
+			end)
+
+			aura_table.hit_Time = tick()
+			aura_table.canParry = false
+		end
+
+		task.spawn(function()
+			repeat
+				RunService.PreRender:Wait()
+			until (tick() - aura_table.hit_Time) >= 1
+			aura_table.canParry = true
+		end)
+	end)
+
+initializate("nurysium_temp")
+local function optimizePerformance()
+    -- Boost FPS by disabling unnecessary features and reducing settings
+    local workspace = game:GetService("Workspace")
+    local lighting = game:GetService("Lighting")
+    local userInputService = game:GetService("UserInputService")
+    
+    -- Enable streaming and set to low quality for FPS boost
+    workspace.StreamingEnabled = true
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 -- Lowest quality for best FPS
+    lighting.GlobalShadows = false -- Disable shadows
+    lighting.Brightness = 2 -- Adjust lighting for smoothness
+    
+    -- Mouse settings
+    userInputService.MouseDeltaSensitivity = 0.5 -- Reduce mouse lag
+    setfpscap(120) -- Cap FPS at 120 for smoother performance
+
+    -- Disable unnecessary parts and models in Workspace
+    for _, child in pairs(workspace:GetChildren()) do
+        if child:IsA("Model") or child:IsA("Part") then
+            child:Destroy() -- Or set to child:Destroy() selectively based on your needs
+        end
+    end
+    
+    -- Optimize memory usage
+    local function optimizeMemoryUsage()
+        -- Adjust memory limits if applicable (Roblox currently does not support setting memory limits directly)
+        local serviceMemoryLimits = {
+            ['Players'] = 4028,
+            ['Workspace'] = 4028,
+            ['ReplicatedStorage'] = 4028,
+            -- Add more services as needed
+        }
+
+        for serviceName, limit in pairs(serviceMemoryLimits) do
+            local service = game:GetService(serviceName)
+            if service then
+                -- No method currently exists to set memory limits in Roblox
+                -- Uncomment if such a method becomes available
+                -- service:SetMemoryLimit(limit)
+            end
+        end
+    end
+    optimizeMemoryUsage()
+
+    -- Additional Optimizations
+    -- Reduce physics simulation quality for better performance
+    workspace.ParticlesEnabled = false -- Disable particles
+    workspace.Gravity = 196.2 -- Adjust gravity for performance
+    workspace.SmoothTerrain = false -- Disable smooth terrain rendering
+
+    -- Reduce the number of active connections
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player.Character then
+            local character = player.Character
+            for _, part in pairs(character:GetChildren()) do
+                if part:IsA("MeshPart") or part:IsA("Part") then
+                    part.Material = Enum.Material.Plastic -- Change material to reduce rendering complexity
+                end
+            end
+        end
+    end
+end
+
+optimizePerformance()
+
+-- Fluent UI Library
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+if not Fluent then
+    error("Failed to load Fluent library.")
+end
+
+local Window = Fluent:CreateWindow({
+    Title = "Vico Hub!",
+    SubTitle = "Vico Hub is always evolving",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Light",
+})
+
+-- Create Main Tab
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+}
+
+-- Toggle for Auto Parry
+local AutoParryToggle = Tabs.Main:AddToggle("Auto Parry", {
+    Title = "• Main Parry",
+    Default = false,
+})
+
+AutoParryToggle:OnChanged(function(state)
+    aura_Enabled = state
+end)
+
+-- Toggle for Visualizer
+local VisualizerToggle = Tabs.Main:AddToggle("Visualizer", {
+    Title = "• View Part",
+    Default = false,
+})
+
+VisualizerToggle:OnChanged(function(state)
+    visualize_Enabled = state
+end)
+
+-- Toggle for Auto Spam
+local AutoSpamToggle = Tabs.Main:AddToggle("Auto Spam", {
+    Title = "• Main Spam",
+    Default = false,
+})
+
+AutoSpamToggle:OnChanged(function(state)
+    auto_spam = state
+end)
+
+-- Toggle for Manual Spam
+local ManualSpamToggle = Tabs.Main:AddToggle("Auto Spam", {
+    Title = "• Manual Spam",
+    Default = false,
+})
+
+ManualSpamToggle:OnChanged(function(state)
+    ManualSpam(state)
+end)
+
+-- Open the GUI window
+Window:Open()
+
+-- Setup for ScreenGui to include ImageButton
+local ScreenGui = Instance.new("ScreenGui")
+local ImageButton = Instance.new("ImageButton")
+local UICorner = Instance.new("UICorner")
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- Configure ImageButton
+ImageButton.Parent = ScreenGui
+ImageButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(0.120833337, 0, 0.0952890813, 0)
+ImageButton.Size = UDim2.new(0, 50, 0, 50)
+ImageButton.Image = "rbxassetid://83582647628443" -- Set image using decal ID
+ImageButton.Draggable = true
+
+-- Add UICorner for rounded corners
+UICorner.Parent = ImageButton
+
+-- Function to handle click event
+ImageButton.MouseButton1Click:Connect(function()
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.End, false, game)
+end)
